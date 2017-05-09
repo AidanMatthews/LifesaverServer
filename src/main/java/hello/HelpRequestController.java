@@ -23,4 +23,14 @@ public class HelpRequestController {
         return new HelpRequest(id, userId, notifyRadius, call911, emergencyReason,
         		otherInfo, timestamp, latitude, longitude);
     }
+
+    @RequestMapping("/getNearbyRequests")
+    public HelpRequest getNearbyRequests(@RequestParam(value="latitude") float latitude,
+    						 @RequestParam(value="longitude") float longitude)
+    {
+    	SQLiteJDBC sqlite = new SQLiteJDBC();
+    	int id = sqlite.getNearbyRequests(latitude, longitude);
+        return new HelpRequest(id, userId, notifyRadius, call911, emergencyReason,
+        		otherInfo, timestamp, latitude, longitude);
+    }
 }

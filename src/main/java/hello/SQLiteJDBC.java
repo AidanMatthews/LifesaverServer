@@ -1,6 +1,7 @@
 package hello;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class SQLiteJDBC
 {
@@ -107,5 +108,45 @@ public class SQLiteJDBC
 	  }
 	  System.out.println("Request inserted successfully");
 	  return executeValue;
+  }
+  
+  public ArrayList<HelpRequest> getNearbyRequests(float latitude, float longitude)
+  {
+	  ArrayList<HelpRequest> nearbyRequests = new ArrayList<HelpRequest>();
+	  
+	  float latitudeRange = 1.5f;
+	  float longitudeRange = 1.5f;
+
+	  Connection c = connectToDB();
+	  PreparedStatement stmt = null;
+	  try {
+	      stmt = c.prepareStatement("SELECT * FROM REQUEST WHERE (latitude BETWEEN ? AND ?) AND (longitude BETWEEN ? and ?)");
+	      stmt.setFloat(1, latitude - latitudeRange);
+	      stmt.setFloat(2, latitude + latitudeRange);
+	      stmt.setFloat(3, longitude - longitudeRange);
+	      stmt.setFloat(4, longitude + longitudeRange);
+	      
+	      ResultSet requests = stmt.executeQuery();
+	      while (requests.next()) {
+	    	  int id = requests.getInt("id");
+	    	  int userId = requests.getInt("userId");
+	    	  int notifyRadius = requests.getInt("notifyRadius");
+	    	  boolean call911 = requests.getBoolean("call911");
+	    	  int emergencyReason = requests.getInt("emergencyReason");
+	    	  String otherInfo = requests.getString("otherInfo");
+	    	  double timestamp = requests.getDouble("timestamp");
+	    	  float latitudeResult = requests.getFloat("latitude");
+	    	  float longitudeResult = requests.getFloat("longitude");
+	    	  HelpRequest request = new HelpRequest(id, userId, notifyRadius, call911, emergencyReason, otherInfo, timestamp, latitudeResult, longitudeResult);
+	    	  nearbyRequests.add(request);
+	      }
+	      stmt.close();
+	      c.close();
+	  } catch ( Exception e ) {
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	  }
+	  System.out.println("User inserted successfully");
+	  
+	  return nearbyRequests;
   }
 }
