@@ -1,5 +1,7 @@
 package hello;
 
+import java.util.ArrayList;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,12 +27,11 @@ public class HelpRequestController {
     }
 
     @RequestMapping("/getNearbyRequests")
-    public HelpRequest getNearbyRequests(@RequestParam(value="latitude") float latitude,
+    public ArrayList<HelpRequest> getNearbyRequests(@RequestParam(value="latitude") float latitude,
     						 @RequestParam(value="longitude") float longitude)
     {
     	SQLiteJDBC sqlite = new SQLiteJDBC();
-    	int id = sqlite.getNearbyRequests(latitude, longitude);
-        return new HelpRequest(id, userId, notifyRadius, call911, emergencyReason,
-        		otherInfo, timestamp, latitude, longitude);
+    	ArrayList<HelpRequest> nearbyRequests = sqlite.getNearbyRequests(latitude, longitude);
+        return nearbyRequests;
     }
 }
