@@ -1,4 +1,4 @@
-package hello;
+package lifesaver;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -114,17 +114,20 @@ public class SQLiteJDBC
   {
 	  ArrayList<HelpRequest> nearbyRequests = new ArrayList<HelpRequest>();
 	  
+	  // We have a hard coded maximum range for help requests
 	  float latitudeRange = 1.5f;
 	  float longitudeRange = 1.5f;
 
 	  Connection c = connectToDB();
 	  PreparedStatement stmt = null;
 	  try {
-	      stmt = c.prepareStatement("SELECT * FROM REQUEST WHERE (latitude BETWEEN ? AND ?) AND (longitude BETWEEN ? and ?)");
+	      stmt = c.prepareStatement("SELECT * FROM REQUEST WHERE (latitude BETWEEN ? AND ?) AND (longitude BETWEEN ? and ?) ORDER BY ABS(latitude - ?) + ABS(longitude - ?) LIMIT 10");
 	      stmt.setFloat(1, latitude - latitudeRange);
 	      stmt.setFloat(2, latitude + latitudeRange);
 	      stmt.setFloat(3, longitude - longitudeRange);
 	      stmt.setFloat(4, longitude + longitudeRange);
+	      stmt.setFloat(5, latitude);
+	      stmt.setFloat(6, longitude);
 	      
 	      ResultSet requests = stmt.executeQuery();
 	      while (requests.next()) {

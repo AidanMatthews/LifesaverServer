@@ -1,4 +1,4 @@
-package hello;
+package lifesaver;
 
 public class User {
     private final long id;

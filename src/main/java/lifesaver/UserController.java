@@ -1,4 +1,4 @@
-package hello;
+package lifesaver;
 
 import javax.annotation.PostConstruct;
 

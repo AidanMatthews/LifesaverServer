@@ -1,4 +1,4 @@
-package hello;
+package lifesaver;
 
 public class HelpRequest {
     private final long id;
